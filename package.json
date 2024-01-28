@@ -1,0 +1,46 @@
+{
+  "name": "@kyungseopk1m/holidays-kr",
+  "version": "1.1.0",
+  "description": "data.go.kr 기반 대한민국 공휴일 데이터",
+  "main": "dist/cjs/index.js",
+  "module": "dist/mjs/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup.sh"
+  },
+  "private": false,
+  "keywords": [
+    "공휴일",
+    "한국",
+    "대한민국",
+    "Korean",
+    "Holidays",
+    "Korea Holidays"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kyungseopk1m/holidays.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kyungseopk1m/holidays.git",
+    "email": "kskim0919@kakao.com"
+  },
+  "homepage": "https://github.com/kyungseopk1m/holidays.git",
+  "author": "Kyungseop Kim <kskim0919@kakao.com> (https://github.com/kyungseopk1m)",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  }
+}
