@@ -24,7 +24,7 @@ export const holidays = async (year: string, year2?: string) => {
             return {
                 success: true,
                 message: 'Success',
-                data: result.data,
+                data: result.data.data,
             }
         }
     } catch (error) {
