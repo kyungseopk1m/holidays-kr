@@ -1,8 +1,4 @@
 import axios from "axios";
-import dotenv from "dotenv";
-dotenv.config();
-
-const { AXIOS_URL } = process.env;
 
 export const holidays = async (year: string, year2?: string) => {
     if (year.length !== 4 || (year2 && year2.length !== 4)) {
@@ -14,7 +10,7 @@ export const holidays = async (year: string, year2?: string) => {
     }
 
     try {
-        const result = await axios.post(AXIOS_URL as string, {
+        const result = await axios.post('https://scheduler-getholidaydate-lkny2xhv4a-du.a.run.app', {
             year,
             year2,
         });
