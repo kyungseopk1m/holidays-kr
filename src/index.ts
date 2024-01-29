@@ -1,7 +1,8 @@
 import axios from "axios";
 
 export const holidays = async (year: string, year2?: string) => {
-    if (year.length !== 4 || (year2 && year2.length !== 4)) {
+    if (year.length !== 4 || (year2 && year2.length !== 4)
+        || !(/^\d+$/).test(year) || (year2 && !(/^\d+$/).test(year2))) {
         return {
             success: false,
             message: 'Please enter the year correctly.',
