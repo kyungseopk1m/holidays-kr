@@ -1,6 +1,6 @@
 {
   "name": "@kyungseopk1m/holidays-kr",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "data.go.kr 기반 대한민국 공휴일 데이터",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
@@ -14,7 +14,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup.sh"
+    "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./fixup.sh",
+    "deploy": "npm run build && npm publish --access=public"
   },
   "private": false,
   "keywords": [
