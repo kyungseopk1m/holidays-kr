@@ -1,6 +1,6 @@
 {
   "name": "@kyungseopk1m/holidays-kr",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "data.go.kr 기반 대한민국 공휴일 데이터",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
