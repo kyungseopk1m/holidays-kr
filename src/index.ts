@@ -9,6 +9,14 @@ export const holidays = async (year: string, year2?: string) => {
         }
     }
 
+    if (year < '2004' || (year2 && year2 < '2004')) {
+        return {
+            success: false,
+            message: 'Invalid input range. We provides data from 2004 onwards.',
+            data: [],
+        }
+    }
+
     try {
         const result = await axios.post('https://scheduler-getholidaydate-lkny2xhv4a-du.a.run.app', {
             year,
