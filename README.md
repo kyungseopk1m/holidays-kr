@@ -31,15 +31,25 @@ console.log(data);    // 2010.01 ~ 2015.12 데이터
 
 ## Output
 
-| 속성      | 설명 |
-|---------|-----|
-| name    | 공휴일의 이름 |
+| 속성      | 설명                |
+|---------|-------------------|
+| success | 호출 성공 여부          |
+| message | 호출 메시지            |
+| name    | 공휴일의 이름           |
 | date    | 'YYYYMMDD' 형식의 날짜 |
 
+<br>
+
 ```typescript
+interface response {
+    success: boolean;
+    message: string;
+    data: example[];
+}
+
 interface example {
-    "date": 20240101,
-    "name": "1월1일"
+    date: number;
+    name: string;
 }
 ```
 
