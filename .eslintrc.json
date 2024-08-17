@@ -1,0 +1,130 @@
+{
+  "env": {
+    "es2022": true,
+    "node": true
+  },
+  "ignorePatterns": ["./dist/*", "./node_modules"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "node",
+    "promise"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended"
+  ],
+  "parserOptions": {
+    "project": ["./tsconfig.json"],
+    "ecmaVersion": 7,
+    "sourceType": "module",
+    "requireConfigFile": false
+  },
+  "rules": {
+    "arrow-parens": [
+      "warn",
+      "as-needed"
+    ],
+    "arrow-spacing": [
+      "error",
+      {
+        "before": true,
+        "after": true
+      }
+    ],
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+      }
+    ],
+    "comma-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "curly": [
+      "error",
+      "all"
+    ],
+    "eqeqeq": [
+      "error",
+      "always"
+    ],
+    "no-eq-null": "error",
+    "indent": [
+      "error",
+      2,
+      { "SwitchCase": 1 }
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "tabWidth": 2,
+        "ignoreUrls": true
+      }
+    ],
+    "no-console": "off",
+    "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 0 }],
+    "no-trailing-spaces": "error",
+    "no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "all"
+      }
+    ],
+    "node/exports-style": [
+      "error",
+      "module.exports"
+    ],
+    "node/no-deprecated-api": "error",
+    "node/prefer-global/console": [
+      "error",
+      "always"
+    ],
+    "node/prefer-global/process": [
+      "error",
+      "always"
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "consistent": true
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "padded-blocks": [
+      "error",
+      "never"
+    ],
+    "promise/prefer-await-to-then": "warn",
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "space-before-function-paren": "warn",
+    "semi": [
+      "error",
+      "always"
+    ],
+    "strict": [
+      "error",
+      "global"
+    ]
+  }
+}

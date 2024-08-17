@@ -3,6 +3,11 @@
   "compilerOptions": {
     "module": "esnext",
     "outDir": "dist/mjs",
-    "target": "esnext"
+    "target": "esnext",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "types": ["jest", "node"],
+    "allowJs": true,
+    "checkJs": false,
   }
 }
