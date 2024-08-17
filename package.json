@@ -1,6 +1,6 @@
 {
   "name": "@kyungseopk1m/holidays-kr",
-  "version": "1.2.5",
+  "version": "1.3.0",
   "description": "한국천문연구원 기반 대한민국 공휴일 데이터",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
@@ -46,5 +46,10 @@
   },
   "dependencies": {
     "axios": "^1.7.4"
-  }
+  },
+  "files": [
+    "dist",
+    "src",
+    "__test__"
+  ]
 }
