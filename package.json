@@ -1,6 +1,6 @@
 {
   "name": "@kyungseopk1m/holidays-kr",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "한국천문연구원 기반 대한민국 공휴일 데이터",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
@@ -32,10 +32,10 @@
   },
   "bugs": {
     "url": "https://github.com/kyungseopk1m/holidays-kr.git",
-    "email": "kskim0919@kakao.com"
+    "email": "kks0919@kakao.com"
   },
   "homepage": "https://github.com/kyungseopk1m/holidays-kr.git",
-  "author": "Kyungseop Kim <kskim0919@kakao.com> (https://github.com/kyungseopk1m)",
+  "author": "Kyungseop Kim <kks0919@kakao.com> (https://github.com/kyungseopk1m)",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^29.5.12",
