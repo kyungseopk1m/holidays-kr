@@ -1,9 +1,10 @@
 # holidays-kr
 
-- 공공데이터포털 내 한국천문연구원의 공휴일 정보를 기반으로 데이터를 제공합니다.
-- 2004년부터의 공휴일 정보를 제공하며, 매월 3회에 걸쳐 주기적으로 최신 데이터를 불러옵니다.
-- 매년 다음해의 공휴일 정보를 불러올 수 있고, 후년의 정보는 불러오지 않습니다.
-- `commonjs`와 `ESM`을 지원합니다.
+- No need for a separate API key—just fetch data effortlessly with a single call.
+- All data is sourced directly from the Korea Astronomical Research Institute's official holiday database via the Public Data Portal.
+- Holiday data is available from 2004 onward, with regular updates three times a month to keep it current.
+- You can retrieve holiday information for the upcoming year annually, but data for the year after next is not included.
+- Supports both `commonjs` and `ESM`.
 
 ## Install
 ```
@@ -16,9 +17,9 @@ npm i @kyungseopk1m/holidays-kr
 ```typescript
 import { holidays } from '@kyungseopk1m/holidays-kr';
 
-const result = await holidays('2024');
+const result = await holidays('2025');
 
-console.log(result);    // 2024.01 ~ 2024.12 데이터
+console.log(result);    // Data from 2025.01 to 2025.12
 
 // or
 
@@ -26,17 +27,17 @@ const { holidays } = require('@kyungseopk1m/holidays-kr');
 
 const data = await holidays('2010', '2015');
 
-console.log(data);    // 2010.01 ~ 2015.12 데이터
+console.log(data);    // Data from 2010.01 to 2015.12
 ```
 
 ## Output
 
-| 속성      | 설명                |
-|---------|-------------------|
-| success | 호출 성공 여부          |
-| message | 호출 메시지            |
-| name    | 공휴일의 이름           |
-| date    | 'YYYYMMDD' 형식의 날짜 |
+| Property | Description                    |
+|----------|--------------------------------|
+| success  | API call success status        |
+| message  | Response message               |
+| name     | Holiday name (in Korean)       |
+| date     | Date in 'YYYYMMDD' format      |
 
 <br>
 
