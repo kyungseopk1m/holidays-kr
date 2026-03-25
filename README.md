@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@kyungseopk1m/holidays-kr)](https://www.npmjs.com/package/@kyungseopk1m/holidays-kr)
 [![license](https://img.shields.io/npm/l/@kyungseopk1m/holidays-kr)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-supported-blue)](https://www.typescriptlang.org/)
-[![Known Vulnerabilities](https://snyk.io/test/github/kyungseopk1m/holidays-kr/badge.svg)](https://snyk.io/test/github/kyungseopk1m/holidays-kr)
+[![Known Vulnerabilities](https://snyk.io/test/npm/@kyungseopk1m/holidays-kr/badge.svg)](https://snyk.io/test/npm/@kyungseopk1m/holidays-kr)
 [![CodeQL](https://github.com/kyungseopk1m/holidays-kr/actions/workflows/codeql.yml/badge.svg)](https://github.com/kyungseopk1m/holidays-kr/actions/workflows/codeql.yml)
 
 [한국어](#한국어) | [English](#english)

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "allowJs": true,
+    "target": "ES2022",
     "allowSyntheticDefaultImports": true,
     "baseUrl": "src",
     "declaration": true,

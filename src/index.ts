@@ -1,4 +1,18 @@
-export const holidays = async (year: string, year2?: string) => {
+export interface Holiday {
+  date: number;
+  name: string;
+}
+
+export type HolidayResponse =
+  | { success: true; message: string; data: Holiday[] }
+  | { success: false; message: string; data: Holiday[] };
+
+export const holidays = async (
+  year: string,
+  year2?: string
+): Promise<HolidayResponse> => {
+  if (year2 === "") year2 = undefined;
+
   if (
     year.length !== 4 ||
     (year2 && year2.length !== 4) ||
@@ -12,10 +26,21 @@ export const holidays = async (year: string, year2?: string) => {
     };
   }
 
-  if (year < "2004" || (year2 && year2 < "2004")) {
+  const yearNum = parseInt(year, 10);
+  const year2Num = year2 ? parseInt(year2, 10) : undefined;
+
+  if (yearNum < 2004 || (year2Num !== undefined && year2Num < 2004)) {
     return {
       success: false,
-      message: "Invalid input range. We provides data from 2004 onwards.",
+      message: "Invalid input range. We provide data from 2004 onwards.",
+      data: [],
+    };
+  }
+
+  if (year2Num !== undefined && year2Num < yearNum) {
+    return {
+      success: false,
+      message: "The end year must be greater than or equal to the start year.",
       data: [],
     };
   }
@@ -32,6 +57,7 @@ export const holidays = async (year: string, year2?: string) => {
           year,
           year2,
         }),
+        signal: AbortSignal.timeout(10000),
       }
     );
 
@@ -43,12 +69,12 @@ export const holidays = async (year: string, year2?: string) => {
       };
     }
 
-    const result = await response.json();
+    const result: { data?: Holiday[] } = await response.json();
 
     return {
       success: true,
       message: "Success",
-      data: result.data,
+      data: result?.data ?? [],
     };
   } catch (error) {
     return error instanceof Error

@@ -24,7 +24,7 @@ describe("holidays", () => {
     const result = await holidays("2003");
     expect(result).toEqual({
       success: false,
-      message: "Invalid input range. We provides data from 2004 onwards.",
+      message: "Invalid input range. We provide data from 2004 onwards.",
       data: [],
     });
   });
@@ -53,6 +53,89 @@ describe("holidays", () => {
       success: false,
       message: "Network Error",
       data: [],
+    });
+  });
+
+  it("should return an error if year2 is not 4 digits", async () => {
+    const result = await holidays("2024", "20");
+    expect(result).toEqual({
+      success: false,
+      message: "Please enter the year correctly.",
+      data: [],
+    });
+  });
+
+  it("should return an error if year2 is before 2004", async () => {
+    const result = await holidays("2004", "2003");
+    expect(result).toEqual({
+      success: false,
+      message: "Invalid input range. We provide data from 2004 onwards.",
+      data: [],
+    });
+  });
+
+  it("should return an error if year2 is less than year", async () => {
+    const result = await holidays("2020", "2010");
+    expect(result).toEqual({
+      success: false,
+      message: "The end year must be greater than or equal to the start year.",
+      data: [],
+    });
+  });
+
+  it("should return success with year2 parameter", async () => {
+    const mockData = { data: ["holiday1", "holiday2", "holiday3"] };
+    fetchSpy.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => mockData,
+    } as Response);
+
+    const result = await holidays("2020", "2024");
+    expect(result).toEqual({
+      success: true,
+      message: "Success",
+      data: mockData.data,
+    });
+  });
+
+  it("should return an error if a non-Error is thrown", async () => {
+    fetchSpy.mockRejectedValueOnce("string error");
+
+    const result = await holidays("2024");
+    expect(result).toEqual({
+      success: false,
+      message: "Unknown error",
+      data: [],
+    });
+  });
+
+  it("should handle timeout errors", async () => {
+    const abortError = new Error("The operation was aborted due to timeout");
+    abortError.name = "TimeoutError";
+    fetchSpy.mockRejectedValueOnce(abortError);
+
+    const result = await holidays("2024");
+    expect(result).toEqual({
+      success: false,
+      message: "The operation was aborted due to timeout",
+      data: [],
+    });
+  });
+
+  it("should treat empty string year2 as undefined", async () => {
+    const mockData = { data: ["holiday1"] };
+    fetchSpy.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => mockData,
+    } as Response);
+
+    const result = await holidays("2024", "");
+    expect(result).toEqual({
+      success: true,
+      message: "Success",
+      data: mockData.data,
     });
   });
 
