@@ -16,7 +16,7 @@ If you discover a security vulnerability in this project, please report it respo
 - **Process**:
   1. Submit a report through GitHub's Private Vulnerability Reporting.
   2. Include a detailed description and steps to reproduce, if possible.
-  3. You will receive an acknowledgment within 14 days.
+  3. You will receive an acknowledgment within 7 days.
   4. A fix will be prioritized and released as a patch version.
   5. You will be credited in the release notes (unless you prefer to remain anonymous).
 
