@@ -3,90 +3,102 @@ export interface Holiday {
   name: string;
 }
 
-export type HolidayResponse =
-  | { success: true; message: string; data: Holiday[] }
-  | { success: false; message: string; data: Holiday[] };
+export interface HolidaysOptions {
+  baseUrl?: string;
+  signal?: AbortSignal;
+}
+
+const DEFAULT_BASE_URL = "https://kdata.vercel.app";
+const DEFAULT_TIMEOUT_MS = 10000;
+const MIN_YEAR = 2004;
+
+const toYearNumber = (input: string | number, label: string): number => {
+  const str = typeof input === "number" ? String(input) : input;
+  if (typeof str !== "string" || !/^\d{4}$/.test(str)) {
+    throw new TypeError(
+      `${label} must be a 4-digit year (string or number). received: ${JSON.stringify(input)}`,
+    );
+  }
+  const num = parseInt(str, 10);
+  if (num < MIN_YEAR) {
+    throw new RangeError(
+      `${label} must be ${MIN_YEAR} or later. received: ${num}`,
+    );
+  }
+  return num;
+};
+
+const stripTrailingSlashes = (url: string): string => {
+  let i = url.length;
+  while (i > 0 && url.charCodeAt(i - 1) === 47) i--;
+  return url.slice(0, i);
+};
+
+const resolveBaseUrl = (options?: HolidaysOptions): string => {
+  if (options?.baseUrl) return stripTrailingSlashes(options.baseUrl);
+  const envUrl =
+    typeof process !== "undefined"
+      ? process.env?.HOLIDAYS_KR_BASE_URL
+      : undefined;
+  return stripTrailingSlashes(
+    envUrl && envUrl.length > 0 ? envUrl : DEFAULT_BASE_URL,
+  );
+};
+
+const fetchYear = async (
+  year: number,
+  baseUrl: string,
+  signal: AbortSignal,
+): Promise<Holiday[]> => {
+  const response = await fetch(`${baseUrl}/api/v1/holidays/${year}.json`, {
+    method: "GET",
+    signal,
+  });
+
+  if (response.status === 404) return [];
+
+  if (!response.ok) {
+    throw new Error(
+      `Failed to fetch holidays for ${year}: HTTP ${response.status}`,
+    );
+  }
+
+  const payload = (await response.json()) as {
+    year?: number;
+    data?: Holiday[];
+  };
+  return Array.isArray(payload.data) ? payload.data : [];
+};
 
 export const holidays = async (
-  year: string,
-  year2?: string
-): Promise<HolidayResponse> => {
-  if (year2 === "") year2 = undefined;
+  year: string | number,
+  year2?: string | number,
+  options?: HolidaysOptions,
+): Promise<Holiday[]> => {
+  const normalizedYear2 =
+    year2 === "" || year2 === undefined ? undefined : year2;
 
-  if (
-    year.length !== 4 ||
-    (year2 && year2.length !== 4) ||
-    !/^\d+$/.test(year) ||
-    (year2 && !/^\d+$/.test(year2))
-  ) {
-    return {
-      success: false,
-      message: "Please enter the year correctly.",
-      data: [],
-    };
-  }
+  const start = toYearNumber(year, "year");
+  const end =
+    normalizedYear2 !== undefined
+      ? toYearNumber(normalizedYear2, "year2")
+      : start;
 
-  const yearNum = parseInt(year, 10);
-  const year2Num = year2 ? parseInt(year2, 10) : undefined;
-
-  if (yearNum < 2004 || (year2Num !== undefined && year2Num < 2004)) {
-    return {
-      success: false,
-      message: "Invalid input range. We provide data from 2004 onwards.",
-      data: [],
-    };
-  }
-
-  if (year2Num !== undefined && year2Num < yearNum) {
-    return {
-      success: false,
-      message: "The end year must be greater than or equal to the start year.",
-      data: [],
-    };
-  }
-
-  try {
-    const response = await fetch(
-      "https://scheduler-getholidaydate-lkny2xhv4a-du.a.run.app",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          year,
-          year2,
-        }),
-        signal: AbortSignal.timeout(10000),
-      }
+  if (end < start) {
+    throw new RangeError(
+      `year2 must be greater than or equal to year. received: year=${start}, year2=${end}`,
     );
-
-    if (!response.ok) {
-      return {
-        success: false,
-        message: "Failed to fetch holiday data",
-        data: [],
-      };
-    }
-
-    const result: { data?: Holiday[] } = await response.json();
-
-    return {
-      success: true,
-      message: "Success",
-      data: result?.data ?? [],
-    };
-  } catch (error) {
-    return error instanceof Error
-      ? {
-          success: false,
-          message: error.message,
-          data: [],
-        }
-      : {
-          success: false,
-          message: "Unknown error",
-          data: [],
-        };
   }
+
+  const baseUrl = resolveBaseUrl(options);
+  const signal = options?.signal ?? AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
+
+  const years: number[] = [];
+  for (let y = start; y <= end; y++) years.push(y);
+
+  const buckets = await Promise.all(
+    years.map((y) => fetchYear(y, baseUrl, signal)),
+  );
+
+  return buckets.flat();
 };
