@@ -1,4 +1,4 @@
-import { holidays } from "../src";
+import { holidays, clearCache } from "../src";
 
 const ok = (data: Array<{ date: number; name: string }>) =>
   ({
@@ -11,6 +11,8 @@ describe("holidays", () => {
   let fetchSpy: jest.SpyInstance;
 
   beforeEach(() => {
+    clearCache();
+    delete process.env.HOLIDAYS_KR_BASE_URL;
     fetchSpy = jest.spyOn(global, "fetch");
   });
 
@@ -165,5 +167,148 @@ describe("holidays", () => {
       message: "Success",
       data: [],
     });
+  });
+});
+
+describe("holidays — baseUrl resolution", () => {
+  let fetchSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    clearCache();
+    delete process.env.HOLIDAYS_KR_BASE_URL;
+    fetchSpy = jest.spyOn(global, "fetch");
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
+  });
+
+  it("should use options.baseUrl when provided", async () => {
+    fetchSpy.mockResolvedValueOnce(ok([{ date: 20240101, name: "1월1일" }]));
+
+    await holidays("2024", undefined, {
+      baseUrl: "https://my-mirror.example.com/api",
+    });
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://my-mirror.example.com/api/2024.json",
+      expect.objectContaining({ method: "GET" })
+    );
+  });
+
+  it("should use HOLIDAYS_KR_BASE_URL env when option not provided", async () => {
+    process.env.HOLIDAYS_KR_BASE_URL = "https://env-mirror.example.com/api";
+    fetchSpy.mockResolvedValueOnce(ok([{ date: 20240101, name: "1월1일" }]));
+
+    await holidays("2024");
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://env-mirror.example.com/api/2024.json",
+      expect.any(Object)
+    );
+  });
+
+  it("should prefer options.baseUrl over env", async () => {
+    process.env.HOLIDAYS_KR_BASE_URL = "https://env-mirror.example.com/api";
+    fetchSpy.mockResolvedValueOnce(ok([{ date: 20240101, name: "1월1일" }]));
+
+    await holidays("2024", undefined, {
+      baseUrl: "https://option-mirror.example.com/api",
+    });
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://option-mirror.example.com/api/2024.json",
+      expect.any(Object)
+    );
+  });
+
+  it("should strip trailing slashes from baseUrl", async () => {
+    fetchSpy.mockResolvedValueOnce(ok([{ date: 20240101, name: "1월1일" }]));
+
+    await holidays("2024", undefined, {
+      baseUrl: "https://my-mirror.example.com/api///",
+    });
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://my-mirror.example.com/api/2024.json",
+      expect.any(Object)
+    );
+  });
+
+  it("should use options.signal when provided", async () => {
+    const controller = new AbortController();
+    fetchSpy.mockResolvedValueOnce(ok([{ date: 20240101, name: "1월1일" }]));
+
+    await holidays("2024", undefined, { signal: controller.signal });
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ signal: controller.signal })
+    );
+  });
+});
+
+describe("holidays — in-memory cache", () => {
+  let fetchSpy: jest.SpyInstance;
+
+  beforeEach(() => {
+    clearCache();
+    delete process.env.HOLIDAYS_KR_BASE_URL;
+    fetchSpy = jest.spyOn(global, "fetch");
+  });
+
+  afterEach(() => {
+    fetchSpy.mockRestore();
+  });
+
+  it("should fetch the same year only once on repeat calls", async () => {
+    const items = [{ date: 20240101, name: "1월1일" }];
+    fetchSpy.mockResolvedValueOnce(ok(items));
+
+    const first = await holidays("2024");
+    const second = await holidays("2024");
+
+    expect(first).toEqual(second);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should cache 404 responses (no refetch for non-existent year)", async () => {
+    fetchSpy.mockResolvedValueOnce({ ok: false, status: 404 } as Response);
+
+    const first = await holidays("2099");
+    const second = await holidays("2099");
+
+    expect(first).toEqual(second);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("should treat different baseUrls as separate cache entries", async () => {
+    fetchSpy
+      .mockResolvedValueOnce(ok([{ date: 20240101, name: "A" }]))
+      .mockResolvedValueOnce(ok([{ date: 20240101, name: "B" }]));
+
+    const a = await holidays("2024", undefined, {
+      baseUrl: "https://a.example.com",
+    });
+    const b = await holidays("2024", undefined, {
+      baseUrl: "https://b.example.com",
+    });
+
+    expect(a.data[0].name).toBe("A");
+    expect(b.data[0].name).toBe("B");
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+  });
+
+  it("clearCache() should force refetch", async () => {
+    const items = [{ date: 20240101, name: "1월1일" }];
+    fetchSpy
+      .mockResolvedValueOnce(ok(items))
+      .mockResolvedValueOnce(ok(items));
+
+    await holidays("2024");
+    clearCache();
+    await holidays("2024");
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
   });
 });

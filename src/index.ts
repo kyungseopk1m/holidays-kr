@@ -7,31 +7,67 @@ export type HolidayResponse =
   | { success: true; message: string; data: Holiday[] }
   | { success: false; message: string; data: Holiday[] };
 
-const ENDPOINT = "https://kdata.vercel.app/api/v1/holidays";
+export interface HolidaysOptions {
+  baseUrl?: string;
+  signal?: AbortSignal;
+}
+
+const DEFAULT_BASE = "https://kdata.kxxseop.workers.dev/api/v1/holidays";
 const TIMEOUT_MS = 10000;
 const MIN_YEAR = 2004;
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+
+type CacheEntry = { data: Holiday[]; expiresAt: number };
+const memoryCache = new Map<string, CacheEntry>();
+
+const cacheKey = (baseUrl: string, year: number) => `${baseUrl}::${year}`;
+
+const resolveBaseUrl = (override?: string): string => {
+  const raw =
+    override ??
+    (typeof process !== "undefined"
+      ? process.env?.HOLIDAYS_KR_BASE_URL
+      : undefined) ??
+    DEFAULT_BASE;
+  return raw.replace(/\/+$/, "");
+};
 
 const fetchYear = async (
+  baseUrl: string,
   year: number,
   signal: AbortSignal
 ): Promise<Holiday[]> => {
-  const response = await fetch(`${ENDPOINT}/${year}.json`, {
+  const key = cacheKey(baseUrl, year);
+  const hit = memoryCache.get(key);
+  if (hit && hit.expiresAt > Date.now()) return hit.data;
+
+  const response = await fetch(`${baseUrl}/${year}.json`, {
     method: "GET",
     signal,
   });
 
-  if (response.status === 404) return [];
+  if (response.status === 404) {
+    memoryCache.set(key, { data: [], expiresAt: Date.now() + CACHE_TTL_MS });
+    return [];
+  }
   if (!response.ok) {
     throw new Error("Failed to fetch holiday data");
   }
 
   const payload: { data?: Holiday[] } = await response.json();
-  return Array.isArray(payload?.data) ? payload.data : [];
+  const data = Array.isArray(payload?.data) ? payload.data : [];
+  memoryCache.set(key, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+  return data;
+};
+
+export const clearCache = (): void => {
+  memoryCache.clear();
 };
 
 export const holidays = async (
   year: string,
-  year2?: string
+  year2?: string,
+  options?: HolidaysOptions
 ): Promise<HolidayResponse> => {
   if (year2 === "") year2 = undefined;
 
@@ -68,15 +104,16 @@ export const holidays = async (
   }
 
   try {
+    const baseUrl = resolveBaseUrl(options?.baseUrl);
     const start = yearNum;
     const end = year2Num ?? yearNum;
-    const signal = AbortSignal.timeout(TIMEOUT_MS);
+    const signal = options?.signal ?? AbortSignal.timeout(TIMEOUT_MS);
 
     const years: number[] = [];
     for (let y = start; y <= end; y++) years.push(y);
 
     const buckets = await Promise.all(
-      years.map((y) => fetchYear(y, signal))
+      years.map((y) => fetchYear(baseUrl, y, signal))
     );
 
     return {
