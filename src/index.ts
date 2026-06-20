@@ -29,7 +29,7 @@ const resolveBaseUrl = (override?: string): string => {
       ? process.env?.HOLIDAYS_KR_BASE_URL
       : undefined) ??
     DEFAULT_BASE;
-  return raw.replace(/\/+$/, "");
+  return raw.replace(/(?<!\/)\/+$/, "");
 };
 
 const fetchYear = async (

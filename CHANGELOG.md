@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.3] - 2026-06-20
+
+### Fixed
+
+- Anchor the trailing-slash trim in `baseUrl` resolution with a negative lookbehind (`/(?<!\/)\/+$/`) to avoid polynomial backtracking on adversarial input. Same behavior, linear matching. (CodeQL `js/polynomial-redos`)
+
 ## [2.0.2] - 2026-05-22
 
 - Data source endpoint migrated from `kdata.vercel.app` to `kdata.kxxseop.workers.dev` (Cloudflare) due to traffic limits on the previous host. The v2.0.1 endpoint is being phased out — upgrade to v2.0.2+.
