@@ -15,6 +15,7 @@ export interface HolidaysOptions {
 const DEFAULT_BASE = "https://kdata.kxxseop.workers.dev/api/v1/holidays";
 const TIMEOUT_MS = 10000;
 const MIN_YEAR = 2004;
+const MAX_YEAR_SPAN = 100;
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 
 type CacheEntry = { data: Holiday[]; expiresAt: number };
@@ -72,6 +73,7 @@ export const holidays = async (
   if (year2 === "") year2 = undefined;
 
   if (
+    typeof year !== "string" ||
     year.length !== 4 ||
     (year2 && year2.length !== 4) ||
     !/^\d+$/.test(year) ||
@@ -99,6 +101,14 @@ export const holidays = async (
     return {
       success: false,
       message: "The end year must be greater than or equal to the start year.",
+      data: [],
+    };
+  }
+
+  if (year2Num !== undefined && year2Num - yearNum > MAX_YEAR_SPAN) {
+    return {
+      success: false,
+      message: `The year range is too large. The maximum span is ${MAX_YEAR_SPAN} years.`,
       data: [],
     };
   }

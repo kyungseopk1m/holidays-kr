@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.1.0] - 2026-07-01
+
+### Added
+
+- Cap the queryable year range at 100 years. A range spanning more than 100 years now returns an input error instead of issuing one concurrent request per year.
+
+### Fixed
+
+- `holidays()` no longer throws when `year` is `null` or `undefined`; it returns the standard `{ success: false }` response, consistent with other invalid input.
+
 ## [2.0.3] - 2026-06-20
 
 ### Fixed

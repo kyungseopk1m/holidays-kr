@@ -88,6 +88,26 @@ describe("holidays", () => {
     });
   });
 
+  it("should return an error (not throw) if year is null or undefined", async () => {
+    const fromNull = await holidays(null as unknown as string);
+    const fromUndefined = await holidays(undefined as unknown as string);
+    const expected = {
+      success: false,
+      message: "Please enter the year correctly.",
+      data: [],
+    };
+    expect(fromNull).toEqual(expected);
+    expect(fromUndefined).toEqual(expected);
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("should return an error and not fetch when the year range is too large", async () => {
+    const result = await holidays("2004", "9999");
+    expect(result.success).toBe(false);
+    expect(result.message).toContain("range is too large");
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
   it("should return success with year2 parameter (data merged across years)", async () => {
     const items2020 = [{ date: 20200101, name: "1월1일" }];
     const items2021 = [{ date: 20210101, name: "1월1일" }];
