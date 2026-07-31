@@ -68,6 +68,27 @@ interface example {
 }
 ```
 
+### 옵션
+
+세 번째 인자입니다.
+
+```typescript
+const result = await holidays("2025", undefined, {
+  signal: AbortSignal.timeout(3000),
+});
+```
+
+| 옵션      | 설명                                        |
+| --------- | ------------------------------------------- |
+| `baseUrl` | 데이터 출처. 기본값은 내장 엔드포인트       |
+| `signal`  | 요청 취소와 타임아웃. 기본값은 10초         |
+
+`baseUrl`은 `HOLIDAYS_KR_BASE_URL` 환경 변수로도 지정할 수 있고, 옵션 값이 우선합니다.
+
+### 캐시
+
+조회한 연도는 24시간 동안 메모리에 캐시됩니다. 데이터가 없는 연도도 같습니다. 비우려면 `clearCache()`를 호출합니다.
+
 ### 라이선스
 
 [MIT](LICENSE)
@@ -131,6 +152,27 @@ interface example {
   name: string;
 }
 ```
+
+### Options
+
+The third argument.
+
+```typescript
+const result = await holidays("2025", undefined, {
+  signal: AbortSignal.timeout(3000),
+});
+```
+
+| Option    | Description                                       |
+| --------- | ------------------------------------------------- |
+| `baseUrl` | Data source. Defaults to the built-in endpoint     |
+| `signal`  | Cancellation and timeout. Defaults to 10 seconds   |
+
+`baseUrl` can also be set through `HOLIDAYS_KR_BASE_URL`, and the option takes precedence.
+
+### Caching
+
+Fetched years are cached in memory for 24 hours, including years with no data. Call `clearCache()` to drop it.
 
 ### License
 

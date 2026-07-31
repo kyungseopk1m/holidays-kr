@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.1] - 2026-07-29
+
+### Fixed
+
+- Ship separate ESM and CommonJS type declarations instead of one copy of the ESM output. The build previously collapsed both into `dist/index.d.ts`, and because the package is `"type": "module"` that single file was an ESM declaration served to every `exports` condition. A CommonJS TypeScript project on `moduleResolution: node16` or `nodenext` therefore failed to compile against 2.1.0 with `TS1479: the referenced file is an ECMAScript module and cannot be imported with 'require'`, even though `require()` resolved to the CommonJS build and worked at runtime. Each condition now carries its own `types` and both consumer shapes type-check.
+
+### Added
+
+- `attw`, `publint`, and `check` scripts, plus a package quality check step in CI and in the publish workflow, so a packaging regression fails before release.
+- A CI workflow that runs tests and the package check on pull requests.
+- `"sideEffects": false`, which lets bundlers drop the package when it is unused.
+- README coverage for the `options` argument (`baseUrl`, `signal`), the `HOLIDAYS_KR_BASE_URL` environment variable, and `clearCache()`. All four shipped in 2.0.2 but were documented only in this changelog.
+
 ## [2.1.0] - 2026-07-01
 
 ### Added
