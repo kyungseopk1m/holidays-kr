@@ -93,6 +93,10 @@ const result = await holidays("2025", undefined, {
 
 [MIT](LICENSE)
 
+### 기여하기
+
+기여 방법과 필수 테스트는 [CONTRIBUTING.md](CONTRIBUTING.md)를 참고하세요.
+
 ---
 
 ## English
@@ -177,3 +181,8 @@ Fetched years are cached in memory for 24 hours, including years with no data. C
 ### License
 
 [MIT](LICENSE)
+
+### Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution requirements and the
+required test commands.
