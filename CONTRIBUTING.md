@@ -3,6 +3,12 @@
 Thank you for helping improve `holidays-kr`. Contributions of bug fixes,
 tests, documentation, and focused features are welcome.
 
+## Reporting holiday data errors
+
+Holiday data is served from a separate data source, not from this repository,
+so a pull request cannot fix it. Open an issue with the date, the expected
+holiday, and a source such as an official government announcement.
+
 ## Before opening a pull request
 
 1. Open an issue first for a substantial change so that its scope and design

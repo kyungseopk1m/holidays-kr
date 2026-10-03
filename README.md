@@ -32,17 +32,15 @@ npm i @kyungseopk1m/holidays-kr
 ```typescript
 import { holidays } from "@kyungseopk1m/holidays-kr";
 
-const result = await holidays("2025");
+const result = await holidays("2025"); // 2025.01 ~ 2025.12 데이터
+const range = await holidays("2010", "2015"); // 2010.01 ~ 2015.12 데이터
+```
 
-console.log(result); // 2025.01 ~ 2025.12 데이터
-
-// 또는
-
+```javascript
+// CommonJS
 const { holidays } = require("@kyungseopk1m/holidays-kr");
 
-const data = await holidays("2010", "2015");
-
-console.log(data); // 2010.01 ~ 2015.12 데이터
+holidays("2025").then((result) => console.log(result));
 ```
 
 ### 반환 데이터
@@ -68,6 +66,8 @@ interface example {
   name: string;
 }
 ```
+
+데이터가 아직 없는 연도(예: 2년 후)는 `success: true`, `data: []` 로 반환됩니다.
 
 ### 옵션
 
@@ -121,17 +121,15 @@ npm i @kyungseopk1m/holidays-kr
 ```typescript
 import { holidays } from "@kyungseopk1m/holidays-kr";
 
-const result = await holidays("2025");
+const result = await holidays("2025"); // Data from 2025.01 to 2025.12
+const range = await holidays("2010", "2015"); // Data from 2010.01 to 2015.12
+```
 
-console.log(result); // Data from 2025.01 to 2025.12
-
-// or
-
+```javascript
+// CommonJS
 const { holidays } = require("@kyungseopk1m/holidays-kr");
 
-const data = await holidays("2010", "2015");
-
-console.log(data); // Data from 2010.01 to 2015.12
+holidays("2025").then((result) => console.log(result));
 ```
 
 ### Output
@@ -157,6 +155,8 @@ interface example {
   name: string;
 }
 ```
+
+Years with no published data yet (e.g. two years ahead) return `success: true` with `data: []`.
 
 ### Options
 
