@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.1.2] - 2026-10-03
+
+### Changed
+
+- Publish from GitHub Actions with npm trusted publishing (OIDC) instead of a long-lived npm token. Provenance is still attached to every release.
+
+### Documentation
+
+- Split the README usage example into separate ESM and CommonJS blocks. The previous single block mixed `import` and `require` and used top-level `await` in CommonJS, so it could not run as written.
+- Note in the README that a year with no published data yet returns `success: true` with an empty `data` array.
+- Explain in CONTRIBUTING how to report holiday data errors, and mark all 2.x versions as supported in SECURITY.
+
 ## [2.1.1] - 2026-07-29
 
 ### Fixed
